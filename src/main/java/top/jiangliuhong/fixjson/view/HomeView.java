@@ -1,7 +1,8 @@
 package top.jiangliuhong.fixjson.view;
 
-import top.jiangliuhong.fixjson.anno.FXMLView;
+import top.jiangliuhong.fixjson.component.anno.FXMLView;
 
 @FXMLView("home")
-public class HomeView {
+public class HomeView implements IFxmlView {
+
 }

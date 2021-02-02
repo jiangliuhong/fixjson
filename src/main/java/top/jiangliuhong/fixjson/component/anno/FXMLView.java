@@ -1,4 +1,4 @@
-package top.jiangliuhong.fixjson.anno;
+package top.jiangliuhong.fixjson.component.anno;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
