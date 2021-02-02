@@ -1,5 +1,6 @@
 package top.jiangliuhong.fixjson;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import javafx.application.Application;
@@ -10,6 +11,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import top.jiangliuhong.fixjson.component.ApplicationContext;
+import top.jiangliuhong.fixjson.component.anno.FXMLView;
+import top.jiangliuhong.fixjson.utils.ClassUtils;
 import top.jiangliuhong.fixjson.view.HomeView;
 import top.jiangliuhong.fixjson.view.IFxmlView;
 import top.jiangliuhong.fixjson.view.ISplashScreen;
@@ -30,7 +33,7 @@ public class FixJsonApplication extends Application {
      * 开场动画回调线程
      */
     private final CompletableFuture<Runnable> splashIsShowing = new CompletableFuture<>();
-    private static Class<? extends IFxmlView>  homeView;
+    private static Class<? extends IFxmlView> homeView;
     private static String[] args = new String[0];
     private static SplashScreen splashScreen;
 
@@ -49,7 +52,23 @@ public class FixJsonApplication extends Application {
     @Override
     public void init() throws Exception {
 
-        CompletableFuture.runAsync(ApplicationContext::init).whenComplete((contextBean, throwable) -> {
+        CompletableFuture.runAsync(() -> {
+            ApplicationContext.init();
+            String packageName = getClass().getPackageName();
+            log.info("开始扫描包:{}", packageName);
+            Set<String> beanClassNames = ClassUtils.packageEach(packageName);
+            beanClassNames.forEach(beanClassName -> {
+                try {
+                    Class<?> beanClass = Thread.currentThread().getContextClassLoader().loadClass(beanClassName);
+                    FXMLView fxmlViewAnnotation = beanClass.getAnnotation(FXMLView.class);
+                    if (fxmlViewAnnotation != null) {
+                        log.info("开始加载view类:{}", beanClassName);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }).whenComplete((contextBean, throwable) -> {
 
         }).thenAcceptBothAsync(splashIsShowing, (contextBean, closeSplash) -> {
             Platform.runLater(closeSplash);

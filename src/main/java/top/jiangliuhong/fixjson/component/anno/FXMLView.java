@@ -3,6 +3,8 @@ package top.jiangliuhong.fixjson.component.anno;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import javafx.stage.StageStyle;
+
 /**
  * FXMLController <br/>
  * 标记为FXML视图
@@ -20,4 +22,31 @@ public @interface FXMLView {
      */
     String value();
 
+    /**
+     * 国际化配置
+     * 
+     * @return bundle
+     */
+    String bundle() default "";
+
+    /**
+     * 国际化配置对应编码
+     * 
+     * @return encoding
+     */
+    String encoding() default "UTF-8";
+
+    /**
+     * 窗口标题
+     * 
+     * @return title
+     */
+    String title() default "";
+
+    /**
+     * 窗口样式
+     * 
+     * @return stageStyle
+     */
+    StageStyle stageStyle() default StageStyle.UTILITY;
 }
