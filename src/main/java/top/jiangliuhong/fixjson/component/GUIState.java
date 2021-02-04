@@ -1,4 +1,4 @@
-package top.jiangliuhong.fixjson.component.bean;
+package top.jiangliuhong.fixjson.component;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;

@@ -14,8 +14,8 @@ import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import top.jiangliuhong.fixjson.component.ApplicationContext;
 import top.jiangliuhong.fixjson.component.anno.FXMLView;
-import top.jiangliuhong.fixjson.component.bean.FxmlViewInfo;
-import top.jiangliuhong.fixjson.component.bean.GUIState;
+import top.jiangliuhong.fixjson.component.FxmlViewInfo;
+import top.jiangliuhong.fixjson.component.GUIState;
 import top.jiangliuhong.fixjson.utils.ClassUtils;
 import top.jiangliuhong.fixjson.view.IFxmlView;
 import top.jiangliuhong.fixjson.view.ISplashScreen;
@@ -48,10 +48,10 @@ public class FixJsonApplication extends Application {
     public static void launch(final Class<? extends Application> appClass, final ISplashScreen splashScreen,
         final Class<? extends IFxmlView> view, final String[] args) {
         log.info("启动FIXJSON");
-        Application.launch(appClass);
         FixJsonApplication.homeView = view;
         FixJsonApplication.args = args;
         FixJsonApplication.splashScreen = splashScreen;
+        Application.launch(appClass);
     }
 
     @Override
@@ -59,6 +59,9 @@ public class FixJsonApplication extends Application {
         CompletableFuture.runAsync(() -> {
             log.info("开始初始化");
             ApplicationContext.init();
+            if (splashScreen == null) {
+                FixJsonApplication.splashScreen = new SplashScreen();
+            }
             String packageName = getClass().getPackageName();
             log.info("开始扫描包:{}", packageName);
             Set<String> beanClassNames = ClassUtils.packageEach(packageName);
@@ -66,7 +69,6 @@ public class FixJsonApplication extends Application {
                 try {
                     Class<?> beanClass = Thread.currentThread().getContextClassLoader().loadClass(beanClassName);
                     FXMLView fxmlViewAnnotation = beanClass.getAnnotation(FXMLView.class);
-                    final GUIState state = ApplicationContext.getState();
                     if (fxmlViewAnnotation != null) {
                         log.info("开始加载view类:{}", beanClassName);
                         ApplicationContext.loadView(fxmlViewAnnotation, beanClass);
@@ -88,23 +90,33 @@ public class FixJsonApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         ApplicationContext.getState().setStage(primaryStage);
         Stage splashStage = new Stage(StageStyle.TRANSPARENT);
-
         // 显示过度窗口
         log.info("过滤窗口开启");
-        SplashScreen splash = new SplashScreen();
-        Scene splashScene = new Scene(splash.getParent(), Color.TRANSPARENT);
+        Scene splashScene = new Scene(splashScreen.getParent(), Color.TRANSPARENT);
         splashStage.setScene(splashScene);
         splashStage.initStyle(StageStyle.TRANSPARENT);
         splashStage.show();
-
         splashIsShowing.complete(() -> {
-            // 初始化首页
-            ApplicationContext.getState().getStage().initStyle(StageStyle.UTILITY);
-
-            ApplicationContext.getState().getStage().show();
+            try {
+                // 初始化首页
+                GUIState guiState = ApplicationContext.getState();
+                Stage stage = guiState.getStage();
+                stage.setIconified(true);
+                stage.setResizable(true);
+                stage.setHeight(ApplicationContext.getProperties().getHeight());
+                stage.setWidth(ApplicationContext.getProperties().getWidth());
+                stage.setTitle(ApplicationContext.getProperties().getTitle());
+                stage.initStyle(StageStyle.DECORATED);
+                FxmlViewInfo view = ApplicationContext.getView(homeView);
+                Scene scene = view.getView().getScene() != null ? view.getView().getScene() : new Scene(view.getView());
+                stage.setScene(scene);
+                stage.show();
+            } catch (Throwable t) {
+                log.error("Failed to load application: ", t);
+                errorAction.accept(t);
+            }
             // 关闭过度窗口
             log.info("过滤窗口关闭");
             splashStage.hide();
@@ -119,8 +131,8 @@ public class FixJsonApplication extends Application {
 
     private static Consumer<Throwable> defaultErrorAction() {
         return e -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Oops! An unrecoverable error occurred.\n"
-                + "Please contact your software vendor.\n\n" + "The application will stop now.");
+            String message = "FIXJSON ERROR,MESSAGE:" + e.getMessage();
+            Alert alert = new Alert(Alert.AlertType.ERROR, message);
             alert.showAndWait().ifPresent(response -> Platform.exit());
         };
     }

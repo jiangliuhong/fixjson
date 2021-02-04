@@ -21,6 +21,12 @@ public class FixJsonProperties {
      * title
      */
     private String title;
-    private Integer width;
+    private Integer width = 400;
+    private Integer height = 400;
+    private String css;
+    /**
+     * 基础fxml存放路径
+     */
+    private String baseView = "/views";
 
 }

@@ -34,7 +34,9 @@ public class PropertiesUtils {
     }
 
     private static void setValue(Field field, Object obj, Class<?> type, String value) throws IllegalAccessException {
-        if (type == String.class) {
+        if (value == null) {
+            return;
+        } else if (type == String.class) {
             field.set(obj, value);
         } else if (type == Integer.class) {
             field.set(obj, Integer.valueOf(value));

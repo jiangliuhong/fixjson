@@ -1,11 +1,14 @@
 package top.jiangliuhong.fixjson.component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
-import top.jiangliuhong.fixjson.component.bean.FxmlViewInfo;
-import top.jiangliuhong.fixjson.component.bean.GUIState;
 import top.jiangliuhong.fixjson.config.properties.FixJsonProperties;
 
 @Getter
@@ -32,6 +35,22 @@ public class ApplicationContextBean {
     }
 
     public void addView(String viewName, FxmlViewInfo viewInfo) {
+        viewInfo.setContextBean(this);
         this.views.put(viewName, viewInfo);
     }
+
+    /**
+     * 获取css文件地址
+     * 
+     * @return List<String>
+     */
+    public List<String> getCssPath() {
+        List<String> list = new ArrayList<>();
+        if (StringUtils.isNotBlank(this.properties.getCss())) {
+            String[] split = this.properties.getCss().split(";");
+            list.addAll(Arrays.asList(split));
+        }
+        return list;
+    }
+
 }

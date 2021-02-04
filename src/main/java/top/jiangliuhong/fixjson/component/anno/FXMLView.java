@@ -49,4 +49,11 @@ public @interface FXMLView {
      * @return stageStyle
      */
     StageStyle stageStyle() default StageStyle.UTILITY;
+
+    /**
+     * css样式文件
+     * 
+     * @return css
+     */
+    String[] css() default {};
 }
