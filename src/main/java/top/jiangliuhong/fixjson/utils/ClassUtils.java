@@ -10,10 +10,37 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * 
+ * <p>
+ * ClassUtils
+ * </p>
+ * 类相关工具类
+ * 
+ * @author jiangliuhong
+ * @date 2021-2-4 20:57
+ * @version 1.0.0
+ */
 public final class ClassUtils {
 
     private ClassUtils() {}
 
+    /**
+     * 从包名确定文件路径从类包实例创建文件路径等价。路径将以斜杠作为前缀和后缀。
+     *
+     * @param clazz 类
+     * @return 一个包结构对应的路径
+     */
+    public static String determineFilePathFromPackageName(final Class<?> clazz) {
+        return "/" + clazz.getPackage().getName().replace('.', '/') + "/";
+    }
+
+    /**
+     * 遍历包
+     * 
+     * @param packageName 包名
+     * @return 这个包下所有的类名称
+     */
     public static Set<String> packageEach(String packageName) {
         Set<String> classNameSets = new HashSet<>();
         String packagePath = packageName.replace(".", "/");
