@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +91,6 @@ public class FixJsonApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        ApplicationContext.getState().setStage(primaryStage);
         Stage splashStage = new Stage(StageStyle.TRANSPARENT);
         // 显示过度窗口
         log.info("过滤窗口开启");
@@ -100,6 +100,9 @@ public class FixJsonApplication extends Application {
         splashStage.show();
         splashIsShowing.complete(() -> {
             try {
+                // 已经初始化完成后的处理
+                // 设置主窗口对象
+                ApplicationContext.getState().setStage(primaryStage);
                 // 初始化首页
                 GUIState guiState = ApplicationContext.getState();
                 Stage stage = guiState.getStage();

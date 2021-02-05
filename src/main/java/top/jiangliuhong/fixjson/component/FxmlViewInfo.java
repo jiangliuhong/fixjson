@@ -37,7 +37,7 @@ public class FxmlViewInfo {
     private URL resource;
     private Class<?> clazz;
     private String fxml;
-    private Optional<ResourceBundle> bundle;
+    private ResourceBundle bundle;
     private ApplicationContextBean contextBean;
 
     /**
@@ -68,10 +68,10 @@ public class FxmlViewInfo {
         }
     }
 
-    private FXMLLoader loadSynchronously(final URL resource, final Optional<ResourceBundle> bundle)
+    private FXMLLoader loadSynchronously(final URL resource, ResourceBundle bundle)
         throws IllegalStateException, NoSuchMethodException, IllegalAccessException, InvocationTargetException,
         InstantiationException {
-        final FXMLLoader loader = new FXMLLoader(resource, bundle.orElse(null));
+        final FXMLLoader loader = new FXMLLoader(resource, bundle);
         Constructor<?> constructor = clazz.getConstructor();
         loader.setController(constructor.newInstance());
         try {

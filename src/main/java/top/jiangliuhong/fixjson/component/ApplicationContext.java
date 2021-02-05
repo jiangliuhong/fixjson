@@ -82,7 +82,7 @@ public final class ApplicationContext {
         contextBean.addView(clazz.getName(), info);
     }
 
-    private static Optional<ResourceBundle> getResourceBundle(FXMLView annotation, Class<?> clazz) {
+    private static ResourceBundle getResourceBundle(FXMLView annotation, Class<?> clazz) {
         try {
             String bundleName;
             if (StringUtils.isEmpty(annotation.bundle())) {
@@ -91,11 +91,10 @@ public final class ApplicationContext {
                 bundleName = annotation.bundle();
             }
             ResourceBundleControl control = new ResourceBundleControl(Charset.forName(annotation.encoding()));
-            ResourceBundle bundle = getBundle(bundleName, control);
-            return Optional.of(bundle);
+            return getBundle(bundleName, control);
         } catch (MissingResourceException ex) {
             log.error("No resource bundle could be determined:" + ex.getMessage());
-            return Optional.empty();
+            return null;
         }
     }
 
