@@ -113,9 +113,7 @@ public class FixJsonApplication extends Application {
                 stage.setTitle(ApplicationContext.getProperties().getTitle());
                 stage.initStyle(StageStyle.DECORATED);
                 FxmlViewInfo view = ApplicationContext.getView(homeView);
-                Scene scene = view.getView().getScene() != null ? view.getView().getScene() : new Scene(view.getView());
-                stage.setScene(scene);
-                stage.show();
+                view.show(stage);
             } catch (Throwable t) {
                 log.error("Failed to load application: ", t);
                 errorAction.accept(t);

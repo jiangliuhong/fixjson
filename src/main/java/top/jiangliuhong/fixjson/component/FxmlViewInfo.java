@@ -3,19 +3,20 @@ package top.jiangliuhong.fixjson.component;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import top.jiangliuhong.fixjson.component.ApplicationContextBean;
 import top.jiangliuhong.fixjson.component.anno.FXMLView;
 import top.jiangliuhong.fixjson.constants.FixJsonConstants;
 
@@ -36,9 +37,31 @@ public class FxmlViewInfo {
     private FXMLLoader fxmlLoader;
     private URL resource;
     private Class<?> clazz;
+    private ViewMethod viewMethod;
     private String fxml;
     private ResourceBundle bundle;
     private ApplicationContextBean contextBean;
+
+    /**
+     * 展示这个view
+     * @param stage stage
+     */
+    public void show(Stage stage) {
+        Scene scene = this.getView().getScene();
+        if (scene == null) {
+            scene = new Scene(this.getView());
+        }
+        stage.setScene(scene);
+        Method mounted = this.viewMethod.getMounted();
+        if (mounted != null) {
+            try {
+                mounted.invoke(this.fxmlLoader.getController());
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("class " + this.clazz.getName() + " mounted error", e);
+            }
+        }
+        stage.show();
+    }
 
     /**
      * 获取jfx面板对象
@@ -46,9 +69,7 @@ public class FxmlViewInfo {
      * @return Parent
      */
     public Parent getView() {
-
         ensureFxmlLoaderInitialized();
-
         final Parent parent = fxmlLoader.getRoot();
         loadCssFile(parent);
         return parent;
@@ -68,12 +89,15 @@ public class FxmlViewInfo {
         }
     }
 
-    private FXMLLoader loadSynchronously(final URL resource, ResourceBundle bundle)
-        throws IllegalStateException, NoSuchMethodException, IllegalAccessException, InvocationTargetException,
-        InstantiationException {
+    private FXMLLoader loadSynchronously(final URL resource, ResourceBundle bundle) throws IllegalStateException,
+        NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         final FXMLLoader loader = new FXMLLoader(resource, bundle);
         Constructor<?> constructor = clazz.getConstructor();
         loader.setController(constructor.newInstance());
+        Method created = this.viewMethod.getCreated();
+        if (created != null) {
+            created.invoke(loader.getController());
+        }
         try {
             loader.load();
         } catch (final IOException | IllegalStateException e) {
@@ -115,6 +139,16 @@ public class FxmlViewInfo {
                 }
             }
         }
+    }
+
+    /**
+     * view方法类
+     */
+    @Getter
+    @Setter
+    static class ViewMethod {
+        private Method created;
+        private Method mounted;
     }
 
 }

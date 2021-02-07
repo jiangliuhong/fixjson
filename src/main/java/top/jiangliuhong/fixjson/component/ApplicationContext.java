@@ -2,15 +2,17 @@ package top.jiangliuhong.fixjson.component;
 
 import static java.util.ResourceBundle.getBundle;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.MissingResourceException;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import top.jiangliuhong.fixjson.component.anno.FXMLCreated;
+import top.jiangliuhong.fixjson.component.anno.FXMLMounted;
 import top.jiangliuhong.fixjson.component.anno.FXMLView;
 import top.jiangliuhong.fixjson.config.properties.FixJsonProperties;
 import top.jiangliuhong.fixjson.constants.FixJsonConstants;
@@ -79,7 +81,32 @@ public final class ApplicationContext {
         info.setFxml(fxmlPath);
         URL resource = ApplicationContext.class.getResource(fxmlPath);
         info.setResource(resource);
+        // 初始化生命周期方法
+        info.setViewMethod(initViewMethod(clazz));
         contextBean.addView(clazz.getName(), info);
+    }
+
+    private static FxmlViewInfo.ViewMethod initViewMethod(final Class<?> clazz) {
+        FxmlViewInfo.ViewMethod viewMethod = new FxmlViewInfo.ViewMethod();
+        Method[] methods = clazz.getMethods();
+        for (Method method : methods) {
+            if (method.getAnnotation(FXMLCreated.class) != null) {
+                if (method.getParameterCount() == 0) {
+                    viewMethod.setCreated(method);
+                } else {
+                    log.error("class {} , @FXMLCreated requires a {} with an argument of 0", clazz.getName(),
+                        method.getName());
+                }
+            } else if (method.getAnnotation(FXMLMounted.class) != null) {
+                if (method.getParameterCount() == 0) {
+                    viewMethod.setMounted(method);
+                } else {
+                    log.error("class {} , @FXMLMounted requires a {} with an argument of 0", clazz.getName(),
+                        method.getName());
+                }
+            }
+        }
+        return viewMethod;
     }
 
     private static ResourceBundle getResourceBundle(FXMLView annotation, Class<?> clazz) {
