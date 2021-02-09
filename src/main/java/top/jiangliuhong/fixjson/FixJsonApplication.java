@@ -9,16 +9,14 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import top.jiangliuhong.fixjson.component.ApplicationContext;
-import top.jiangliuhong.fixjson.component.anno.FXMLView;
-import top.jiangliuhong.fixjson.component.FxmlViewInfo;
 import top.jiangliuhong.fixjson.component.GUIState;
+import top.jiangliuhong.fixjson.component.IStageConfig;
+import top.jiangliuhong.fixjson.component.anno.FXMLView;
 import top.jiangliuhong.fixjson.utils.ClassUtils;
-import top.jiangliuhong.fixjson.view.IFxmlView;
 import top.jiangliuhong.fixjson.view.ISplashScreen;
 import top.jiangliuhong.fixjson.view.SplashScreen;
 
@@ -37,21 +35,18 @@ public class FixJsonApplication extends Application {
      * 开场动画回调线程
      */
     private final CompletableFuture<Runnable> splashIsShowing = new CompletableFuture<>();
-    /** 启动时展示的首页 */
-    private static Class<? extends IFxmlView> homeView;
     /** 本次执行的args参数 */
     private static String[] args = new String[0];
-    /** 过度动画 */
-    private static ISplashScreen splashScreen;
+    /** 配置 */
+    private static IStageConfig config;
     /** 错误提示 */
     private static Consumer<Throwable> errorAction = defaultErrorAction();
 
-    public static void launch(final Class<? extends Application> appClass, final ISplashScreen splashScreen,
-        final Class<? extends IFxmlView> view, final String[] args) {
+    public static void launch(final IStageConfig config, final Class<? extends Application> appClass,
+        final String[] args) {
         log.info("启动FIXJSON");
-        FixJsonApplication.homeView = view;
+        FixJsonApplication.config = config;
         FixJsonApplication.args = args;
-        FixJsonApplication.splashScreen = splashScreen;
         Application.launch(appClass);
     }
 
@@ -60,9 +55,6 @@ public class FixJsonApplication extends Application {
         CompletableFuture.runAsync(() -> {
             log.info("开始初始化");
             ApplicationContext.init();
-            if (splashScreen == null) {
-                FixJsonApplication.splashScreen = new SplashScreen();
-            }
             String packageName = getClass().getPackageName();
             log.info("开始扫描包:{}", packageName);
             Set<String> beanClassNames = ClassUtils.packageEach(packageName);
@@ -94,6 +86,10 @@ public class FixJsonApplication extends Application {
         Stage splashStage = new Stage(StageStyle.TRANSPARENT);
         // 显示过度窗口
         log.info("过滤窗口开启");
+        ISplashScreen splashScreen = config.splashScreen();
+        if (splashScreen == null) {
+            splashScreen = new SplashScreen();
+        }
         Scene splashScene = new Scene(splashScreen.getParent(), Color.TRANSPARENT);
         splashStage.setScene(splashScene);
         splashStage.initStyle(StageStyle.TRANSPARENT);
@@ -102,18 +98,18 @@ public class FixJsonApplication extends Application {
             try {
                 // 已经初始化完成后的处理
                 // 设置主窗口对象
-                ApplicationContext.getState().setStage(primaryStage);
                 // 初始化首页
-                GUIState guiState = ApplicationContext.getState();
-                Stage stage = guiState.getStage();
+                GUIState state = ApplicationContext.getState();
+                state.setStage(primaryStage);
+                state.setMenus(config.menus());
+                Stage stage = state.getStage();
                 stage.setIconified(true);
                 stage.setResizable(true);
                 stage.setHeight(ApplicationContext.getProperties().getHeight());
                 stage.setWidth(ApplicationContext.getProperties().getWidth());
                 stage.setTitle(ApplicationContext.getProperties().getTitle());
                 stage.initStyle(StageStyle.DECORATED);
-                FxmlViewInfo view = ApplicationContext.getView(homeView);
-                view.show(stage);
+                state.showView(ApplicationContext.getView(config.homeView()));
             } catch (Throwable t) {
                 log.error("Failed to load application: ", t);
                 errorAction.accept(t);

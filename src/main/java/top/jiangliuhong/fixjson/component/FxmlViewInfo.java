@@ -44,6 +44,7 @@ public class FxmlViewInfo {
 
     /**
      * 展示这个view
+     * 
      * @param stage stage
      */
     public void show(Stage stage) {
