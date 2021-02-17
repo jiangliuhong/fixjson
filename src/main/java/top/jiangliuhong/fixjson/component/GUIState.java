@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -43,6 +44,7 @@ public class GUIState {
         if (scene == null) {
             scene = new Scene(view.getView());
         }
+        MenuBar menuBar = null;
         if (this.menus != null && this.menus.size() > 0) {
             // 设置菜单
             ObservableList<Node> children = null;
@@ -52,10 +54,11 @@ public class GUIState {
                 children = ((Group)root).getChildren();
             }
             if (children != null) {
-                MenuBar menuBar = new MenuBar();
+                menuBar = new MenuBar();
                 menuBar.getMenus().addAll(this.menus);
-                menuBar.setUseSystemMenuBar(true);
-                children.add(menuBar);
+                menuBar.useSystemMenuBarProperty().set(true);
+                menuBar.prefWidthProperty().bind(this.stage.widthProperty());
+                children.add(0,menuBar);
             }
         }
 
@@ -69,6 +72,14 @@ public class GUIState {
             }
         }
         this.stage.show();
+        if(menuBar != null){
+            //final MenuBar finalMenuBar = menuBar;
+            //finalMenuBar.useSystemMenuBarProperty().set(true);
+//            Platform.runLater(()->{
+//                finalMenuBar.setUseSystemMenuBar(true);
+//            });
+        }
+
     }
 
 }

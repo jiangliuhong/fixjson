@@ -10,7 +10,7 @@
 
 
     <properties>
-        <javafx.version>15.0.1</javafx.version>
+        <javafx.version>16-ea+7</javafx.version>
         <java.version>11</java.version>
         <lombok.version>1.18.18</lombok.version>
         <logback.version>1.2.3</logback.version>
