@@ -58,12 +58,31 @@ public final class ApplicationContext {
     }
 
     /**
+     * 根据class获取view对象
+     * 
+     * @param clazz class
+     * @return FxmlViewInfo
+     */
+    public static FxmlViewInfo getViewByClass(final Class<?> clazz) {
+        FXMLView annotation = clazz.getAnnotation(FXMLView.class);
+        if (annotation == null) {
+            throw new RuntimeException("@FXMLView not found");
+        }
+        return loadViewInfo(annotation, clazz);
+    }
+
+    /**
      * 根据class加载view
      * 
      * @param annotation view注解
      * @param clazz class
      */
     public static void loadView(FXMLView annotation, final Class<?> clazz) {
+        FxmlViewInfo info = loadViewInfo(annotation, clazz);
+        contextBean.addView(clazz.getName(), info);
+    }
+
+    private static FxmlViewInfo loadViewInfo(FXMLView annotation, final Class<?> clazz) {
         FxmlViewInfo info = new FxmlViewInfo();
         info.setAnnotation(annotation);
         info.setClazz(clazz);
@@ -83,7 +102,7 @@ public final class ApplicationContext {
         info.setResource(resource);
         // 初始化生命周期方法
         info.setViewMethod(initViewMethod(clazz));
-        contextBean.addView(clazz.getName(), info);
+        return info;
     }
 
     private static FxmlViewInfo.ViewMethod initViewMethod(final Class<?> clazz) {
