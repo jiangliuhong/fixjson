@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -27,11 +26,27 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class GUIState {
+public class    GUIState {
     private Scene scene;
     private List<Menu> menus;
     private String title;
     private Stage stage;
+    private Parent parent;
+
+    public void show(FxmlViewInfo view){
+        Parent root = view.getView();
+        ObservableList<Node> children = null;
+        if (parent instanceof Pane) {
+            children = ((Pane)parent).getChildren();
+        } else if (root instanceof Group) {
+            children = ((Group)parent).getChildren();
+        }
+        if(children != null) {
+            final Parent parent = view.getView();
+            parent.prefW
+            children.add(view.getView());
+        }
+    }
 
     /**
      * 展示view
@@ -56,9 +71,12 @@ public class GUIState {
             if (children != null) {
                 menuBar = new MenuBar();
                 menuBar.getMenus().addAll(this.menus);
-                menuBar.useSystemMenuBarProperty().set(true);
+                final String os = System.getProperty("os.name");
+                if (os != null && os.startsWith("Mac")) {
+                    menuBar.useSystemMenuBarProperty().set(true);
+                }
                 menuBar.prefWidthProperty().bind(this.stage.widthProperty());
-                children.add(0,menuBar);
+                children.add(0, menuBar);
             }
         }
 
@@ -72,13 +90,6 @@ public class GUIState {
             }
         }
         this.stage.show();
-        if(menuBar != null){
-            //final MenuBar finalMenuBar = menuBar;
-            //finalMenuBar.useSystemMenuBarProperty().set(true);
-//            Platform.runLater(()->{
-//                finalMenuBar.setUseSystemMenuBar(true);
-//            });
-        }
 
     }
 

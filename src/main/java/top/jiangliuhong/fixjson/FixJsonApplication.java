@@ -6,8 +6,15 @@ import java.util.function.Consumer;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -109,7 +116,27 @@ public class FixJsonApplication extends Application {
                 stage.setWidth(ApplicationContext.getProperties().getWidth());
                 stage.setTitle(ApplicationContext.getProperties().getTitle());
                 stage.initStyle(StageStyle.DECORATED);
-                state.showView(ApplicationContext.getView(config.homeView()));
+                BorderPane root = new BorderPane();
+                Scene scene = new Scene(root, stage.getHeight(), stage.getWidth(), Color.WHITE);
+                MenuBar menuBar = new MenuBar();
+                root.setTop(menuBar);
+                Menu menu = new Menu("File");
+                menu.getItems().add(new MenuItem("New"));
+                menu.getItems().add(new MenuItem("Save"));
+                menu.getItems().add(new SeparatorMenuItem());
+                menu.getItems().add(new MenuItem("Exit"));
+                menuBar.getMenus().addAll(menu);
+                menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
+                Pane pane = new Pane();
+                pane.prefWidthProperty().bind(primaryStage.widthProperty());
+                pane.prefWidthProperty().bind(primaryStage.heightProperty());
+                root.setCenter(pane);
+
+                state.setParent(pane);
+                state.show(ApplicationContext.getView(config.homeView()));
+                primaryStage.setScene(scene);
+                primaryStage.show();
+                //state.showView(ApplicationContext.getView(config.homeView()));
             } catch (Throwable t) {
                 log.error("Failed to load application: ", t);
                 errorAction.accept(t);
@@ -133,4 +160,6 @@ public class FixJsonApplication extends Application {
             alert.showAndWait().ifPresent(response -> Platform.exit());
         };
     }
+
+
 }
