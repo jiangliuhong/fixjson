@@ -2,16 +2,9 @@ package top.jiangliuhong.fixjson.component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,27 +19,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class    GUIState {
+public class GUIState {
     private Scene scene;
-    private List<Menu> menus;
     private String title;
     private Stage stage;
-    private Parent parent;
-
-    public void show(FxmlViewInfo view){
-        Parent root = view.getView();
-        ObservableList<Node> children = null;
-        if (parent instanceof Pane) {
-            children = ((Pane)parent).getChildren();
-        } else if (root instanceof Group) {
-            children = ((Group)parent).getChildren();
-        }
-        if(children != null) {
-            final Parent parent = view.getView();
-            parent.prefW
-            children.add(view.getView());
-        }
-    }
 
     /**
      * 展示view
@@ -58,26 +34,6 @@ public class    GUIState {
         Scene scene = root.getScene();
         if (scene == null) {
             scene = new Scene(view.getView());
-        }
-        MenuBar menuBar = null;
-        if (this.menus != null && this.menus.size() > 0) {
-            // 设置菜单
-            ObservableList<Node> children = null;
-            if (root instanceof Pane) {
-                children = ((Pane)root).getChildren();
-            } else if (root instanceof Group) {
-                children = ((Group)root).getChildren();
-            }
-            if (children != null) {
-                menuBar = new MenuBar();
-                menuBar.getMenus().addAll(this.menus);
-                final String os = System.getProperty("os.name");
-                if (os != null && os.startsWith("Mac")) {
-                    menuBar.useSystemMenuBarProperty().set(true);
-                }
-                menuBar.prefWidthProperty().bind(this.stage.widthProperty());
-                children.add(0, menuBar);
-            }
         }
 
         this.stage.setScene(scene);
