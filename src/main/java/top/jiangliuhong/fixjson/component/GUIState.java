@@ -1,9 +1,5 @@
 package top.jiangliuhong.fixjson.component;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -23,30 +19,5 @@ public class GUIState {
     private Scene scene;
     private String title;
     private Stage stage;
-
-    /**
-     * 展示view
-     * 
-     * @param view view
-     */
-    public void showView(FxmlViewInfo view) {
-        Parent root = view.getView();
-        Scene scene = root.getScene();
-        if (scene == null) {
-            scene = new Scene(view.getView());
-        }
-
-        this.stage.setScene(scene);
-        Method mounted = view.getViewMethod().getMounted();
-        if (mounted != null) {
-            try {
-                mounted.invoke(view.getFxmlLoader().getController());
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException("class " + view.getClazz().getName() + " mounted error", e);
-            }
-        }
-        this.stage.show();
-
-    }
 
 }

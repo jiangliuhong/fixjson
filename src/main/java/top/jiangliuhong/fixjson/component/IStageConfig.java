@@ -1,6 +1,5 @@
 package top.jiangliuhong.fixjson.component;
 
-import top.jiangliuhong.fixjson.view.IFxmlView;
 import top.jiangliuhong.fixjson.view.ISplashScreen;
 
 public interface IStageConfig {
@@ -17,6 +16,6 @@ public interface IStageConfig {
      * 
      * @return 首页View
      */
-    Class<? extends IFxmlView> homeView();
+    Class<?> homeView();
 
 }

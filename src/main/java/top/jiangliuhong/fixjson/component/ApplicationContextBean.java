@@ -34,8 +34,13 @@ public class ApplicationContextBean {
         this.views = new HashMap<>();
     }
 
+    /**
+     * 增加试图
+     * 
+     * @param viewName viewName
+     * @param viewInfo viewInfo
+     */
     public void addView(String viewName, FxmlViewInfo viewInfo) {
-        viewInfo.setContextBean(this);
         this.views.put(viewName, viewInfo);
     }
 

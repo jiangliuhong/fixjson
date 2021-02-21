@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -43,25 +42,32 @@ public class FxmlViewInfo {
     private ApplicationContextBean contextBean;
 
     /**
-     * 展示这个view
-     * 
-     * @param stage stage
+     * 展示view
      */
-    public void show(Stage stage) {
-        Scene scene = this.getView().getScene();
+    public void showView() {
+        Parent root = this.getView();
+        Scene scene = root.getScene();
         if (scene == null) {
             scene = new Scene(this.getView());
         }
-        stage.setScene(scene);
-        Method mounted = this.viewMethod.getMounted();
+        GUIState state = contextBean.getState();
+        state.getStage().setScene(scene);
+        this.doMounted();
+        state.getStage().show();
+    }
+
+    /**
+     * 执行加载完成方法
+     */
+    public void doMounted() {
+        Method mounted = this.getViewMethod().getMounted();
         if (mounted != null) {
             try {
-                mounted.invoke(this.fxmlLoader.getController());
+                mounted.invoke(this.getFxmlLoader().getController());
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException("class " + this.clazz.getName() + " mounted error", e);
+                throw new RuntimeException("class " + this.getClazz().getName() + " mounted error", e);
             }
         }
-        stage.show();
     }
 
     /**

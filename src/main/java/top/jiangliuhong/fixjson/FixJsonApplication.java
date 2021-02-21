@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import top.jiangliuhong.fixjson.component.ApplicationContext;
+import top.jiangliuhong.fixjson.component.FxmlViewInfo;
 import top.jiangliuhong.fixjson.component.GUIState;
 import top.jiangliuhong.fixjson.component.IStageConfig;
 import top.jiangliuhong.fixjson.component.anno.FXMLView;
@@ -108,7 +109,9 @@ public class FixJsonApplication extends Application {
                 stage.setWidth(ApplicationContext.getProperties().getWidth());
                 stage.setTitle(ApplicationContext.getProperties().getTitle());
                 stage.initStyle(StageStyle.DECORATED);
-                state.showView(ApplicationContext.getView(config.homeView()));
+                // 展示首页
+                FxmlViewInfo homeView = ApplicationContext.getView(config.homeView());
+                homeView.showView();
             } catch (Throwable t) {
                 log.error("Failed to load application: ", t);
                 errorAction.accept(t);

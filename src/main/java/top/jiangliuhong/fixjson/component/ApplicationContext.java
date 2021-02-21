@@ -86,6 +86,7 @@ public final class ApplicationContext {
         FxmlViewInfo info = new FxmlViewInfo();
         info.setAnnotation(annotation);
         info.setClazz(clazz);
+        info.setContextBean(contextBean);
         info.setBundle(getResourceBundle(annotation, clazz));
         String fxmlPath = annotation.value();
         if (StringUtils.isBlank(fxmlPath)) {

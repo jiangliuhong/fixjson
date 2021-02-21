@@ -2,7 +2,6 @@ package top.jiangliuhong.fixjson.config;
 
 import top.jiangliuhong.fixjson.component.IStageConfig;
 import top.jiangliuhong.fixjson.view.HomeView;
-import top.jiangliuhong.fixjson.view.IFxmlView;
 import top.jiangliuhong.fixjson.view.ISplashScreen;
 import top.jiangliuhong.fixjson.view.SplashScreen;
 
@@ -21,7 +20,7 @@ public class FixJsonStageConfig implements IStageConfig {
     }
 
     @Override
-    public Class<? extends IFxmlView> homeView() {
+    public Class<?> homeView() {
         return HomeView.class;
     }
 
