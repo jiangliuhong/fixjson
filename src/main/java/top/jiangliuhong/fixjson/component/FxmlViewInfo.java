@@ -33,10 +33,8 @@ import top.jiangliuhong.fixjson.constants.FixJsonConstants;
 public class FxmlViewInfo {
 
     private FXMLView annotation;
-    private FXMLLoader fxmlLoader;
     private URL resource;
     private Class<?> clazz;
-    private ViewMethod viewMethod;
     private String fxml;
     private ResourceBundle bundle;
     private ApplicationContextBean contextBean;
@@ -52,22 +50,7 @@ public class FxmlViewInfo {
         }
         GUIState state = contextBean.getState();
         state.getStage().setScene(scene);
-        this.doMounted();
         state.getStage().show();
-    }
-
-    /**
-     * 执行加载完成方法
-     */
-    public void doMounted() {
-        Method mounted = this.getViewMethod().getMounted();
-        if (mounted != null) {
-            try {
-                mounted.invoke(this.getFxmlLoader().getController());
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException("class " + this.getClazz().getName() + " mounted error", e);
-            }
-        }
     }
 
     /**
@@ -76,7 +59,7 @@ public class FxmlViewInfo {
      * @return Parent
      */
     public Parent getView() {
-        ensureFxmlLoaderInitialized();
+        FXMLLoader fxmlLoader = ensureFxmlLoaderInitialized();
         final Parent parent = fxmlLoader.getRoot();
         loadCssFile(parent);
         return parent;
@@ -85,12 +68,9 @@ public class FxmlViewInfo {
     /**
      * 初始化fxmlLoader
      */
-    private void ensureFxmlLoaderInitialized() {
-        if (fxmlLoader != null) {
-            return;
-        }
+    private FXMLLoader ensureFxmlLoaderInitialized() {
         try {
-            fxmlLoader = loadSynchronously(resource, bundle);
+            return loadSynchronously(resource, bundle);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -101,10 +81,6 @@ public class FxmlViewInfo {
         final FXMLLoader loader = new FXMLLoader(resource, bundle);
         Constructor<?> constructor = clazz.getConstructor();
         loader.setController(constructor.newInstance());
-        Method created = this.viewMethod.getCreated();
-        if (created != null) {
-            created.invoke(loader.getController());
-        }
         try {
             loader.load();
         } catch (final IOException | IllegalStateException e) {

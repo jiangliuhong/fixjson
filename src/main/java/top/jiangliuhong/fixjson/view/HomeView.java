@@ -1,10 +1,13 @@
 package top.jiangliuhong.fixjson.view;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -18,8 +21,6 @@ import javafx.scene.layout.Pane;
 import lombok.extern.slf4j.Slf4j;
 import top.jiangliuhong.fixjson.component.ApplicationContext;
 import top.jiangliuhong.fixjson.component.FxmlViewInfo;
-import top.jiangliuhong.fixjson.component.anno.FXMLCreated;
-import top.jiangliuhong.fixjson.component.anno.FXMLMounted;
 import top.jiangliuhong.fixjson.component.anno.FXMLView;
 import top.jiangliuhong.fixjson.component.enums.SystemType;
 import top.jiangliuhong.fixjson.component.utils.FXMLUtils;
@@ -34,7 +35,7 @@ import top.jiangliuhong.fixjson.component.utils.FXMLUtils;
  */
 @Slf4j
 @FXMLView("home")
-public class HomeView {
+public class HomeView implements Initializable {
 
     @FXML
     private Pane pane;
@@ -42,27 +43,6 @@ public class HomeView {
     private MenuBar menuBar;
     @FXML
     private TabPane tabPane;
-
-    @FXMLMounted
-    public void mounted() {
-        menuBar.getMenus().addAll(menus());
-        menuBar.prefWidthProperty().bind(pane.widthProperty());
-        tabPane.prefWidthProperty().bind(pane.widthProperty());
-        tabPane.prefHeightProperty().bind(pane.heightProperty());
-        if (SystemType.MAC.equals(FXMLUtils.systemType())) {
-            menuBar.useSystemMenuBarProperty().set(true);
-        } else {
-            Insets tabInsets = tabPane.paddingProperty().getValue();
-            double insetsTop = tabInsets.getTop() + menuBar.getHeight();
-            tabPane.paddingProperty()
-                .setValue(new Insets(insetsTop, tabInsets.getRight(), tabInsets.getBottom(), tabInsets.getLeft()));
-        }
-    }
-
-    @FXMLCreated
-    public void created() {
-
-    }
 
     private List<Menu> menus() {
         List<Menu> menus = new ArrayList<>();
@@ -95,10 +75,25 @@ public class HomeView {
 
     private void newTab() {
         Tab tab = new Tab("新窗口");
-        FxmlViewInfo editView = ApplicationContext.getViewByClass(EditView.class);
+        FxmlViewInfo editView = ApplicationContext.getView(EditView.class);
         Parent view = editView.getView();
         tab.setContent(view);
         tabPane.getTabs().add(tab);
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        menuBar.getMenus().addAll(menus());
+        menuBar.prefWidthProperty().bind(pane.widthProperty());
+        tabPane.prefWidthProperty().bind(pane.widthProperty());
+        tabPane.prefHeightProperty().bind(pane.heightProperty());
+        if (SystemType.MAC.equals(FXMLUtils.systemType())) {
+            menuBar.useSystemMenuBarProperty().set(true);
+        } else {
+            Insets tabInsets = tabPane.paddingProperty().getValue();
+            double insetsTop = tabInsets.getTop() + menuBar.getHeight();
+            tabPane.paddingProperty()
+                .setValue(new Insets(insetsTop, tabInsets.getRight(), tabInsets.getBottom(), tabInsets.getLeft()));
+        }
+    }
 }
