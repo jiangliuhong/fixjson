@@ -2,3 +2,7 @@ build/bin
 node_modules
 frontend/dist
 .idea
+frontend/wailsjs
+frontend/package.json.md5
+.vscode
+test
