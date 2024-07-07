@@ -6,7 +6,6 @@ import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 
 const rootPath = new URL('.', import.meta.url).pathname
-
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
@@ -32,7 +31,6 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': rootPath + 'src',
-            stores: rootPath + 'src/stores',
             wailsjs: rootPath + 'wailsjs'
         },
     },

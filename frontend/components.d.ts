@@ -8,11 +8,12 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    NButton: typeof import('naive-ui')['NButton']
-    NFlex: typeof import('naive-ui')['NFlex']
-    NIcon: typeof import('naive-ui')['NIcon']
+    NAvatar: typeof import('naive-ui')['NAvatar']
     NSpace: typeof import('naive-ui')['NSpace']
-    NTooltip: typeof import('naive-ui')['NTooltip']
+    NText: typeof import('naive-ui')['NText']
     ToolBar: typeof import('./src/components/ToolBar.vue')['default']
+    WindowClose: typeof import('./src/components/icons/WindowClose.vue')['default']
+    WindowMax: typeof import('./src/components/icons/WindowMax.vue')['default']
+    WindowMin: typeof import('./src/components/icons/WindowMin.vue')['default']
   }
 }

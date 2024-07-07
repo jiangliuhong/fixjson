@@ -1,0 +1,62 @@
+:root {
+    //--bg-color: #f8f8f8;
+    //--bg-color-accent: #fff;
+    //--bg-color-page: #f2f3f5;
+    //--text-color-regular: #606266;
+    //--border-color: #dcdfe6;
+    --transition-duration-fast: 0.2s;
+    --transition-function-ease-in-out-bezier: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+html {
+    //text-align: center;
+    cursor: default;
+    -webkit-user-select: none; /* Chrome, Safari */
+    -moz-user-select: none; /* Firefox */
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0000;
+    line-height: 1.5;
+    font-family: v-sans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    overflow: hidden;
+}
+
+@mixin bottom-shadow($transparent) {
+    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, $transparent);
+}
+
+@mixin top-shadow($transparent) {
+    box-shadow: 0 -5px 5px -5px rgba(0, 0, 0, $transparent);
+}
+
+#app {
+    height: 100vh;
+    background-color: #f2f2f2;
+}
+
+.flex-box {
+    display: flex;
+}
+
+.flex-box-v {
+    @extend .flex-box;
+    flex-direction: column;
+}
+
+.flex-box-h {
+    @extend .flex-box;
+    flex-direction: row;
+}
+
+.flex-item {
+    flex: 0 0 auto;
+}
+
+.flex-item-expand {
+    flex-grow: 1;
+}
+
