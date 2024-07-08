@@ -1,5 +1,12 @@
+import { createPinia } from 'pinia'
 import {createApp} from 'vue'
 import App from './App.vue'
 import './styles/style.scss';
 
-createApp(App).mount('#app')
+async function run() {
+    const app = createApp(App)
+    app.use(createPinia())
+    app.mount('#app')
+}
+
+run().then(() => console.log("load success!!"))

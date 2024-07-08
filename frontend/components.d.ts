@@ -7,13 +7,18 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppMain: typeof import('./src/components/AppMain.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
+    NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     NSpace: typeof import('naive-ui')['NSpace']
     NText: typeof import('naive-ui')['NText']
+    NTooltip: typeof import('naive-ui')['NTooltip']
     ToolBar: typeof import('./src/components/ToolBar.vue')['default']
+    ToolbarControlWidget: typeof import('./src/components/common/ToolbarControlWidget.vue')['default']
     WindowClose: typeof import('./src/components/icons/WindowClose.vue')['default']
     WindowMax: typeof import('./src/components/icons/WindowMax.vue')['default']
     WindowMin: typeof import('./src/components/icons/WindowMin.vue')['default']
+    WindowRestore: typeof import('./src/components/icons/WindowRestore.vue')['default']
   }
 }
