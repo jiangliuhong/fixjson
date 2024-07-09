@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"embed"
+	"fixjson/internal/service"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -11,10 +13,10 @@ import (
 
 //go:embed all:frontend/dist
 var assets embed.FS
+var version = "0.0.0"
 
 func main() {
-	// Create an instance of the app structure
-	app := NewApp()
+	preference := service.Preference()
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -28,9 +30,11 @@ func main() {
 		Frameless:                true,
 		EnableDefaultContextMenu: true,
 		BackgroundColour:         options.NewRGBA(27, 38, 54, 0),
-		OnStartup:                app.startup,
+		OnStartup: func(ctx context.Context) {
+			preference.SetAppVersion(version)
+		},
 		Bind: []interface{}{
-			app,
+			preference,
 		},
 		Windows: &windows.Options{
 			WebviewIsTransparent:              true,

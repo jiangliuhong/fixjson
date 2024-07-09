@@ -5,6 +5,7 @@ import {darkThemeOverrides, themeOverrides} from '@/utils/theme.js'
 import AppMain from '@/components/AppMain.vue'
 import {onMounted, ref, watch} from 'vue'
 import {WindowSetDarkTheme, WindowSetLightTheme} from 'wailsjs/runtime/runtime.js'
+import AboutDialog from "@/components/dialogs/AboutDialog.vue";
 
 const prefStore = usePreferencesStore()
 const initializing = ref(true)
@@ -33,6 +34,7 @@ watch(
       :theme-overrides="prefStore.isDark ? darkThemeOverrides : themeOverrides"
       class="fill-height">
     <app-main/>
+    <about-dialog/>
   </n-config-provider>
 </template>
 <style lang="scss" scoped>

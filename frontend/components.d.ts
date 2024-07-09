@@ -7,14 +7,20 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AboutDialog: typeof import('./src/components/dialogs/AboutDialog.vue')['default']
     AppMain: typeof import('./src/components/AppMain.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    IconButton: typeof import('./src/components/common/IconButton.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
+    NButton: typeof import('naive-ui')['NButton']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
+    NDropdown: typeof import('naive-ui')['NDropdown']
+    NIcon: typeof import('naive-ui')['NIcon']
+    NModal: typeof import('naive-ui')['NModal']
     NSpace: typeof import('naive-ui')['NSpace']
+    NSpin: typeof import('naive-ui')['NSpin']
     NText: typeof import('naive-ui')['NText']
     NTooltip: typeof import('naive-ui')['NTooltip']
-    ToolBar: typeof import('./src/components/ToolBar.vue')['default']
+    Ribbon: typeof import('./src/components/sidebar/Ribbon.vue')['default']
     ToolbarControlWidget: typeof import('./src/components/common/ToolbarControlWidget.vue')['default']
     WindowClose: typeof import('./src/components/icons/WindowClose.vue')['default']
     WindowMax: typeof import('./src/components/icons/WindowMax.vue')['default']
