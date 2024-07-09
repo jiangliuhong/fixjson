@@ -8,6 +8,7 @@ import ToolbarControlWidget from '@/components/common/ToolbarControlWidget.vue'
 import {isMacOS} from '@/utils/platform.js'
 import Ribbon from "@/components/sidebar/Ribbon.vue";
 import {EventsOn, WindowIsFullscreen, WindowIsMaximised, WindowToggleMaximise} from 'wailsjs/runtime/runtime.js'
+import Content from "@/components/content/Content.vue";
 
 const logoPaddingLeft = ref(10)
 const maximised = ref(false)
@@ -114,6 +115,7 @@ onMounted(async () => {
           class="flex-box-h flex-item-expand"
           style="--wails-draggable: none">
         <ribbon/>
+        <content/>
       </div>
     </div>
   </n-spin>
