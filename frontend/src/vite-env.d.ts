@@ -6,4 +6,11 @@ declare module '*.vue' {
     export default component
 }
 
-declare module '@json-editor/json-editor'
+// declare module '@json-editor/json-editor'{
+//     export default class JSONEditor {
+//         constructor(element: HTMLElement, options: any);
+//         getValue(): any;
+//         setValue(value: any): void;
+//         destroy(): void;
+//     }
+// }
